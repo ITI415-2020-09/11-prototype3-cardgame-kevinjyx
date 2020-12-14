@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// An enum to track the possible states of a FloatingScore
-public enum eFSState
-{
+public enum eFSState {
     idle,
     pre,
     active,
     post
 }
 
-public class FloatingScore : MonoBehaviour {
+//建立一个贝塞尔曲线运动轨迹来设置FloatScore在游戏界面中的移动
+public class FloatingScore : MonoBehaviour  
+{
     [Header("Set Dynamically")]
     public eFSState state = eFSState.idle;
 
@@ -20,124 +20,84 @@ public class FloatingScore : MonoBehaviour {
     protected int _score = 0;
     public string scoreString;
 
-    // The score property sets both _score and scoreString
-    public int score
-    {
-        get
-        {
-            return (_score);
+    //该属性用来获取或者设定_score的值
+    public int score {
+        get {
+            return(_score);
         }
-        set
-        {
+        set {
             _score = value;
-            scoreString = _score.ToString("N0"); // "N0 adds commas to the num
-            // Search "C# Standard Numeric Format Strings" for ToString formats
+            scoreString = _score.ToString("N0");
             GetComponent<Text>().text = scoreString;
         }
     }
 
-    public List<Vector2> bezierPts; // Bezier points for movement
-    public List<float> fontSizes; // Bezier points for font scaling
-    public float timeStart = -1f;
+    public List<Vector2> bezierPts;
+    public List<float> fontSizes;
+    public float timeStart = 1f;
     public float timeDuration = 1f;
-    public string easingCurve = Easing.InOut; // Uses Easing in Utils.cs
-
-    // The GameObject that will receive the SendMessage when this is done moving
+    public string easingCurve = Easing.InOut;  //Using Easing in Utils.py
     public GameObject reportFinishTo = null;
+    public RectTransform rectTrans;    //this.gameObject的其中一个component
+    public Text txt;    //this.gameObject的其中一个component
 
-    private RectTransform rectTrans;
-    private Text txt;
-
-    // Set up the FloatingScore and movement
-    // Note the use of parameter defaults for eTimeS & eTimeD
-    public void Init(List<Vector2> ePts, float eTimeS = 0, float eTimeD = 1)
+    //初始化贝塞尔曲线的两个点、开始、持续时间
+    public void Init(List<Vector2> ePts, float eTimeS = 0, float eTimeD = 1) 
     {
         rectTrans = GetComponent<RectTransform>();
         rectTrans.anchoredPosition = Vector2.zero;
-
         txt = GetComponent<Text>();
-
         bezierPts = new List<Vector2>(ePts);
 
-        if (ePts.Count == 1)
-        {
-            // If there's only one point
-            // ... then just go there.
-            transform.position = ePts[0];
+        if(ePts.Count == 1) {
+            transform.position = ePts[0];   //如果输入的List只有一个点，把this.gameObject的位置设置成该点的位置
             return;
         }
 
-        // If eTimeS is the default, just start at the current time
-        if (eTimeS == 0) eTimeS = Time.time;
+        if(eTimeS == 0) eTimeS = Time.time;
         timeStart = eTimeS;
         timeDuration = eTimeD;
-
-        state = eFSState.pre; // Set it to the pre state, ready to start moving
+        state = eFSState.pre;  //准备移动的阶段
     }
 
-    public void FSCallback(FloatingScore fs)
-    {
-        // When this callback is called by SendMessage,
-        // add the score from the calling FloatingScore
+    public void FSCallback(FloatingScore fs) {
+        //当这个回传函数被SendMessage调用，score属性被重新设置
         score += fs.score;
     }
 
     // Update is called once per frame
-    private void Update()
+    void Update()
     {
-        // If this is not moving, just return
-        if (state == eFSState.idle) return;
-
-        // Get u from the current time and duration
-        // u ranges from 0 to 1 (usually)
+        if(state == eFSState.idle) return;
+        //设置贝塞尔函数的插值系数，和时间相关
         float u = (Time.time - timeStart) / timeDuration;
-        //Use Easing class from Utils to curve the u value
+        //使用Easing中的方法来Curve u的值
         float uC = Easing.Ease(u, easingCurve);
-        if (u < 0)
-        {
-            // If u<0, then we shouldn't move yet.
+        if(u < 0) {
+            //说明还没到timeState的时间
             state = eFSState.pre;
-            txt.enabled = false; // Hide the score initially
-        }
-        else
-        {
-            if (u >= 1)
-            {
-                // If u>=1, we're done moving
-                uC = 1; // Set uC=1 so we don't overshoot
+            txt.enabled = false;     //把显示txt的HighScore先隐藏
+        } else {
+            if(u > 1) {
+                uC = 1;
                 state = eFSState.post;
-                if (reportFinishTo != null)
-                {
-                    // If there's a callback GameObject
-                    // Use SendMessage to call the FSCallback method
-                    // with this as the parameter.
+                if(reportFinishTo != null) {
+                    // 如果存在一个回传函数，用SendMessage来调用FSCallback方法
                     reportFinishTo.SendMessage("FSCallback", this);
-                    // Now that the message has been sent,
-                    // Destroy this gameObject
                     Destroy(gameObject);
-                }
-                else
-                {
-                    // If there is nothing to callback
-                    // ...then don't destroy this. Just let it stay still.
+                } else {
+                    //如果没有可回传的
                     state = eFSState.idle;
                 }
-            }
-            else
-            {
-                // o<=u<1, which means that this is active and moving
+            } else {
+                // u在0到1之间
                 state = eFSState.active;
-                txt.enabled = true; // Show the score once more
+                txt.enabled = true;
             }
-            // Use Bezier curve to move this to the right point
             Vector2 pos = Utils.Bezier(uC, bezierPts);
-            // RectTransform anchors can be used to position UI objects relative
-            // to total size of the screen
             rectTrans.anchorMin = rectTrans.anchorMax = pos;
-            if (fontSizes != null && fontSizes.Count > 0)
-            {
-                // If fontSizes has values in it
-                // ...then adjust the fontSize of this GUIText
+            if(fontSizes != null && fontSizes.Count > 0) {
+                //如果fontSizes有值，则把GUIText的fontSize设置成按时间变化
                 int size = Mathf.RoundToInt(Utils.Bezier(uC, fontSizes));
                 GetComponent<Text>().fontSize = size;
             }

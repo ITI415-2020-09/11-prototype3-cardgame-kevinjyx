@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Scoreboard : MonoBehaviour {
-    public static Scoreboard S; // The singleton for Scoreboard
+public class Scoreboard : MonoBehaviour
+{
+    public static Scoreboard S;
 
     [Header("Set in Inspector")]
     public GameObject prefabFloatingScore;
@@ -15,64 +16,51 @@ public class Scoreboard : MonoBehaviour {
 
     private Transform canvasTrans;
 
-    // The score property also sets the scoreString
-    public int score
-    {
-        get
-        {
-            return (_score);
+    public int score {
+        get {
+            return(_score);
         }
-        set
-        {
+        set {
             _score = value;
             scoreString = _score.ToString("N0");
         }
     }
 
-    // The scoreString property also sets the Text.text
-    public string scoreString
-    {
-        get
-        {
-            return (_scoreString);
+    //这个属性用来设置Text.text的值
+    public string scoreString {
+        get {
+            return(_scoreString);
         }
-        set
-        {
+        set {
             _scoreString = value;
             GetComponent<Text>().text = _scoreString;
         }
     }
 
-    private void Awake()
+    void Awake()
     {
-        if (S == null)
-        {
-            S = this; // Set the private singleton
-        }
-        else
-        {
+        if(S == null) {
+            S = this;
+        } else {
             Debug.LogError("ERROR: Scoreboard.Awake(): S is already set!");
         }
         canvasTrans = transform.parent;
     }
 
-    // When called by SendMessage, this adds the fs.score to this.score
-    public void FSCallback(FloatingScore fs)
-    {
+    //when called by SendMessage, this adds the fs.score to this.score
+    public void FSCallback(FloatingScore fs) {
         score += fs.score;
     }
 
-    // This will Instantiate a new FloatingScore GameObject and initialize it.
-    // It also returns a pointer to the FloatingScore created so that the
-    // calling function can do more with it (like set fontSizes, and so on)
-    public FloatingScore CreateFloatingScore(int amt, List<Vector2> pts)
-    {
-        GameObject go = Instantiate <GameObject> (prefabFloatingScore);
+    //
+    public FloatingScore CreateFloatingScore(int amt, List<Vector2> pts) {
+        GameObject go = Instantiate<GameObject>(prefabFloatingScore);   //得到预设
+        // GameObject go = Instantiate(prefabFloatingScore) as gameObject; 
         go.transform.SetParent(canvasTrans);
-        FloatingScore fs = go.GetComponent<FloatingScore>();
+        FloatingScore fs = go.GetComponent<FloatingScore>();   //得到预设的脚本组件中的类
         fs.score = amt;
-        fs.reportFinishTo = this.gameObject; // Set fs to call back to this
+        fs.reportFinishTo = this.gameObject;
         fs.Init(pts);
-        return (fs);
+        return(fs);
     }
 }

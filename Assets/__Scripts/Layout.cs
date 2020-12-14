@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//The SlotDef class is not a subclass of MonoBehaviour, so it doesn't need
-//a separate C# file.
-[System.Serializable] // This makes SlotDefs visible in the Unity Inspector pane
-public class SlotDef
-{
+[System.Serializable]
+public class SlotDef {
     public float x;
     public float y;
     public bool faceUp = false;
@@ -15,71 +12,57 @@ public class SlotDef
     public int id;
     public List<int> hiddenBy = new List<int>();
     public string type = "slot";
-    public Vector2 stagger;
+    public Vector2 stagger;     //未抓取排队的每张牌的错位
 }
 
-public class Layout : MonoBehaviour {
-    public PT_XMLReader xmlr; // Just like Deck, this has a PT_XMLReader
-    public PT_XMLHashtable xml; // This variable is for faster xml access
-    public Vector2 multiplier; // The offset of the tableau's center
-    //SlotDef references
-    public List<SlotDef> slotDefs; // All the SlotDefs for Row0-Row3
+public class Layout : MonoBehaviour
+{
+    public PT_XMLReader xmlr;
+    public PT_XMLHashtable xml;
+    public Vector2 multiplier;   //offset of table
+    public List<SlotDef> slotDefs;   //row0 - row3 所有的slotDefs
     public SlotDef drawPile;
     public SlotDef discardPile;
-    // This holds all of the possible names for the layers set by layerID
-    public string[] sortingLayerNames = new string[] { "Row0", "Row1", "Row2", "Row3", "Discard", "Draw" };
+    public string[] sortingLayerNames = new string[] {"Row0", "Row1", "Row2", "Row3", "Draw", "Discard"};
 
-	// This function is called to read in the LayoutXML.xml file
-    public void ReadLayout(string xmlText)
+    //读取LayoutXML.xml中的纸牌排列信息
+    public void ReadLayout(string xmlTest) 
     {
-        xmlr = new PT_XMLReader();
-        xmlr.Parse(xmlText); // The XML is parsed
-        xml = xmlr.xml["xml"][0]; // And xml is set as a shortcut to the XML
+        xmlr = new PT_XMLReader();    //调用PT_XMLReader脚本
+        xmlr.Parse(xmlTest);
+        xml = xmlr.xml["xml"][0];
 
-        //Read in the multiplier, which sets card spacing
+        //读取缩放系数multiplier
         multiplier.x = float.Parse(xml["multiplier"][0].att("x"));
         multiplier.y = float.Parse(xml["multiplier"][0].att("y"));
 
-        //Read in the slots
+        //读取slot中的信息
         SlotDef tSD;
-        //slotsX is used as a shortcut to all the <slot>s
         PT_XMLHashList slotsX = xml["slot"];
-
-        for (int i=0; i<slotsX.Count; i++)
-        {
-            tSD = new SlotDef(); // Create a new SlotDef instance
-            if (slotsX[i].HasAtt("type"))
-            {
-                // If this <slot> has a type attribute parse it
+        for(int i=0; i<slotsX.Count; i++) {
+            tSD = new SlotDef();
+            if(slotsX[i].HasAtt("type")) {   //说明是两种牌堆之一
                 tSD.type = slotsX[i].att("type");
-            }
-            else
-            {
-                // If not, set its type to "slot"; it's a card in the rows
+            } else {           //说明是row1-row3
                 tSD.type = "slot";
             }
-            // Various attributes are parsed into numerical values
             tSD.x = float.Parse(slotsX[i].att("x"));
             tSD.y = float.Parse(slotsX[i].att("y"));
             tSD.layerID = int.Parse(slotsX[i].att("layer"));
-            //This converts the number of the layerID into a text layerName
+            //把layerID转换成text layerName
             tSD.layerName = sortingLayerNames[tSD.layerID];
 
-            switch (tSD.type)
-            {
-                //pull additional attributes based on the type of this <slot>
-                case "slot":
-                    tSD.faceUp = (slotsX[i].att("faceup") == "1");
+            switch(tSD.type) {
+                case "slot": 
+                    tSD.faceUp = (slotsX[i].att("faceup") == "1");   //bool
                     tSD.id = int.Parse(slotsX[i].att("id"));
-                    if (slotsX[i].HasAtt("hiddenby"))
-                    {
+                    if(slotsX[i].HasAtt("hiddenby")) {      //对于不是在最上面的那几排
                         string[] hiding = slotsX[i].att("hiddenby").Split(',');
-                        foreach (string s in hiding)
-                        {
+                        foreach(string s in hiding) {
                             tSD.hiddenBy.Add(int.Parse(s));
                         }
                     }
-                    slotDefs.Add(tSD);
+                    slotDefs.Add(tSD);   //加入了row0-row3中的一张牌
                     break;
 
                 case "drawpile":
