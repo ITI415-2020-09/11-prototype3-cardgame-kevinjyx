@@ -1,0 +1,123 @@
+ public void SetCardTypeImages()
+    {
+        int x = int.Parse(name.Split('_')[0]);
+        if (x < 11&&x!=0)
+        {
+            for (int i = 0; i < x; i++)
+            {
+                CardTypesImage[i].sprite = Cardsuit.sprite;
+                CardTypesImage[i].gameObject.SetActive(true);
+                CardTypesImage[i].rectTransform.localScale = Vector3.one;
+            }
+            switch (x)
+            {
+                case 1:
+                    CardTypesImage[0].rectTransform.localScale = Vector3.one * 1.5f;
+                    break;
+                case 2:
+                    CardTypesImage[0].rectTransform.localPosition = new Vector3(0, 40, 0);
+                    CardTypesImage[1].rectTransform.localPosition = new Vector3(0, -40, 0);
+                    CardTypesImage[0].rectTransform.localScale = Vector3.one * 1.5f;
+                    CardTypesImage[1].rectTransform.localScale = Vector3.one * 1.5f;
+
+                    break;
+                case 3:
+                    CardTypesImage[0].rectTransform.localPosition = new Vector3(0, 40, 0);
+                    CardTypesImage[1].rectTransform.localPosition = new Vector3(0, 0, 0);
+                    CardTypesImage[2].rectTransform.localPosition = new Vector3(0, -40, 0);
+
+
+
+
+
+                    break;
+                case 4:
+                    CardTypesImage[0].rectTransform.localPosition = new Vector3(20, 40, 0);
+                    CardTypesImage[1].rectTransform.localPosition = new Vector3(20, -40, 0);
+                    CardTypesImage[2].rectTransform.localPosition = new Vector3(-20, -40, 0);
+                    CardTypesImage[3].rectTransform.localPosition = new Vector3(-20, 40, 0);
+
+                    break;
+                case 5:
+                    CardTypesImage[0].rectTransform.localPosition = new Vector3(20, 40, 0);
+                    CardTypesImage[1].rectTransform.localPosition = new Vector3(20, -40, 0);
+                    CardTypesImage[2].rectTransform.localPosition = new Vector3(-20, -40, 0);
+                    CardTypesImage[3].rectTransform.localPosition = new Vector3(-20, 40, 0);
+
+                    break;
+                case 6:
+                    CardTypesImage[0].rectTransform.localPosition = new Vector3(20, 40, 0);
+                    CardTypesImage[1].rectTransform.localPosition = new Vector3(20, -40, 0);
+                    CardTypesImage[2].rectTransform.localPosition = new Vector3(20, 0, 0);
+                    CardTypesImage[3].rectTransform.localPosition = new Vector3(-20, 0, 0);
+                    CardTypesImage[4].rectTransform.localPosition = new Vector3(-20, -40, 0);
+                    CardTypesImage[5].rectTransform.localPosition = new Vector3(-20, 40, 0);
+
+
+
+                    break;
+                case 7:
+                    CardTypesImage[0].rectTransform.localPosition = new Vector3(20, 40, 0);
+                    CardTypesImage[1].rectTransform.localPosition = new Vector3(20, -40, 0);
+                    CardTypesImage[2].rectTransform.localPosition = new Vector3(20, 0, 0);
+                    CardTypesImage[3].rectTransform.localPosition = new Vector3(-20, 0, 0);
+                    CardTypesImage[4].rectTransform.localPosition = new Vector3(-20, -40, 0);
+                    CardTypesImage[5].rectTransform.localPosition = new Vector3(-20, 40, 0);
+                    CardTypesImage[6].rectTransform.localPosition = new Vector3(0, -20, 0);
+                    CardTypesImage[6].rectTransform.eulerAngles = new Vector3(0,0,180);
+                    break;
+                case 8:
+                    CardTypesImage[0].rectTransform.localPosition = new Vector3(20, 40, 0);
+                    CardTypesImage[1].rectTransform.localPosition = new Vector3(20, -40, 0);
+                    CardTypesImage[2].rectTransform.localPosition = new Vector3(20, 0, 0);
+                    CardTypesImage[3].rectTransform.localPosition = new Vector3(-20, 0, 0);
+                    CardTypesImage[4].rectTransform.localPosition = new Vector3(-20, -40, 0);
+                    CardTypesImage[5].rectTransform.localPosition = new Vector3(-20, 40, 0);
+                    CardTypesImage[6].rectTransform.localPosition = new Vector3(0, -20, 0);
+                    CardTypesImage[6].rectTransform.eulerAngles = new Vector3(0, 0, 180);
+                    CardTypesImage[7].rectTransform.localPosition = new Vector3(0, 20, 0);
+                    break;
+                case 9:
+                    CardTypesImage[0].rectTransform.localPosition = new Vector3(20, 50, 0);
+                    CardTypesImage[1].rectTransform.localPosition = new Vector3(20, 20, 0);
+                    CardTypesImage[2].rectTransform.localPosition = new Vector3(20, -10, 0);
+                    CardTypesImage[3].rectTransform.localPosition = new Vector3(20, -40, 0);
+                    CardTypesImage[4].rectTransform.localPosition = new Vector3(-20, 50, 0);
+                    CardTypesImage[5].rectTransform.localPosition = new Vector3(-20, 20, 0);
+                    CardTypesImage[6].rectTransform.localPosition = new Vector3(-20, -10, 0);
+                    CardTypesImage[7].rectTransform.localPosition = new Vector3(-20, -40, 0);
+                    CardTypesImage[8].rectTransform.localPosition = new Vector3(0, -30, 0);
+                    CardTypesImage[8].rectTransform.eulerAngles = new Vector3(0, 0, 180);
+
+                    break;
+                case 10:
+                    CardTypesImage[0].rectTransform.localPosition = new Vector3(20, 50, 0);
+                    CardTypesImage[1].rectTransform.localPosition = new Vector3(20, 20, 0);
+                    CardTypesImage[2].rectTransform.localPosition = new Vector3(20, -10, 0);
+                    CardTypesImage[3].rectTransform.localPosition = new Vector3(20, -40, 0);
+                    CardTypesImage[4].rectTransform.localPosition = new Vector3(-20, 50, 0);
+                    CardTypesImage[5].rectTransform.localPosition = new Vector3(-20, 20, 0);
+                    CardTypesImage[6].rectTransform.localPosition = new Vector3(-20, -10, 0);
+                    CardTypesImage[7].rectTransform.localPosition = new Vector3(-20, -40, 0);
+                    CardTypesImage[8].rectTransform.localPosition = new Vector3(0, -30, 0);
+                    CardTypesImage[8].rectTransform.eulerAngles = new Vector3(0, 0, 180);
+                    CardTypesImage[9].rectTransform.localPosition = new Vector3(0, 30, 0);
+                    break;
+                default:
+                    break;
+            }
+        }
+        else if (x == 0)
+        {
+            Image type = CardTpyeRoot.GetComponent<Image>();
+
+            type.sprite = GameManager.Current.GetMaxImage(13 + name.Split('_')[1]);
+        }
+        else
+        {
+            Image type=CardTpyeRoot.GetComponent<Image>();
+
+            type.sprite = GameManager.Current.GetMaxImage(name.Split('_')[0]+name.Split('_')[1]);
+
+        }
+    }
